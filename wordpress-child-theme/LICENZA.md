@@ -8,9 +8,11 @@ Questo progetto usa il **regime AGPL**. Di conseguenza il componente calcolatore
 
 L'obbligo copyleft riguarda il programma eseguito insieme alle Swiss Ephemeris. I contenuti editoriali del portale (Grimorio, pagine dottrinali, immagini di brand) non interoperano con le effemeridi, non fanno parte di quel programma e restano opere d'autore separate, non pubblicate in questo regime.
 
-> **Da completare prima della pubblicazione:** l'AGPL richiede che a chiunque usi il calcolatore attraverso la rete sia offerto il **sorgente completo corrispondente**. Non basta che il JavaScript sia leggibile nel browser. Occorre pubblicare il tema in un repository o come archivio scaricabile e inserirne il collegamento qui sotto e nella sezione «Software di Terze Parti» del calcolatore.
->
-> Sorgente completo: `<INSERIRE URL>`
+L'AGPL richiede che a chiunque usi il calcolatore attraverso la rete sia offerto il **sorgente completo corrispondente**: non basta che il JavaScript sia leggibile nel browser. L'offerta è soddisfatta da questo repository pubblico, richiamato anche nella sezione «Software di Terze Parti» dell'informativa del calcolatore.
+
+> **Sorgente completo:** <https://github.com/IvelSefila/figlie-di-lilith-calcolatore>
+
+Quando si modifica il calcolatore sul sito, il repository va aggiornato di conseguenza: l'obbligo riguarda la versione effettivamente in esecuzione.
 
 Se in futuro il portale dovesse diventare commerciale e si volesse mantenere chiuso il codice interpretativo, la strada è acquistare la licenza professionale Swiss Ephemeris da Astrodienst AG (swisseph@astro.com) e aggiornare questo file. La licenza professionale non ha effetto retroattivo sulle versioni già distribuite sotto AGPL.
 

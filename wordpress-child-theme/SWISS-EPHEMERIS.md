@@ -45,7 +45,7 @@ Verificato nel browser il flusso modulo → calcolo → ruota SVG, le case diffe
 
 ## Provenienza e licenze
 
-Il regime di licenza applicato dal progetto è dichiarato in `LICENZA.md`: **AGPL-3.0-or-later**, con l'obbligo di pubblicare il sorgente completo del tema e collegarlo dal calcolatore.
+Il regime di licenza applicato dal progetto è dichiarato in `LICENZA.md`: **AGPL-3.0-or-later**. Il sorgente completo corrispondente è pubblicato su <https://github.com/IvelSefila/figlie-di-lilith-calcolatore> e collegato dall'informativa del calcolatore. Va riallineato a ogni modifica del calcolatore in produzione.
 
 - Wrapper e binari: https://github.com/prolaxu/swisseph-wasm (0.1.0), licenza GPL-3.0-or-later inclusa in js/vendor/swisseph/LICENSE.
 - Libreria originale: https://github.com/aloistr/swisseph ; documentazione e condizioni ufficiali: https://www.astro.com/swisseph/swephprg.htm . Astrodienst indica AGPL oppure licenza professionale. La descrizione GPL nel wrapper non sostituisce le condizioni ufficiali. L'integrazione locale non acquista licenze né cambia automaticamente la licenza del progetto.
