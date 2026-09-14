@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "build:swiss": "node tools/build-swiss.mjs",
+    "test": "node --test \"tests/*.test.mjs\""
+  },
+  "devDependencies": {
+    "@js-temporal/polyfill": "0.5.1",
+    "esbuild": "0.28.2",
+    "moment-timezone": "0.6.3",
+    "swisseph-wasm": "0.1.0",
+    "tz-lookup": "6.1.25"
+  }
+}

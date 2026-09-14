@@ -1,0 +1,55 @@
+# ==========================================================================
+# Questo repository pubblica il COMPONENTE CALCOLATORE, non l'intero tema.
+# È il sorgente completo corrispondente del programma che viene eseguito nel
+# browser di chi usa il calcolatore, più gli script per ricostruirlo.
+# I contenuti editoriali del portale (Grimorio, homepage, portale completo)
+# non interoperano con le Swiss Ephemeris e restano fuori.
+# ==========================================================================
+
+# Dipendenze e artefatti locali
+node_modules/
+output/
+.validation-python/
+.validation-ephemeris/
+.playwright-cli/
+.claude/
+*.zip
+Thumbs.db
+.DS_Store
+
+# Versione standalone del sito (HTML statico), estranea al calcolatore
+/index.html
+/css/
+/js/
+/Immagini/
+/Ruoli nel Cerchio/
+/*.png
+
+# --- Tema: pagine e contenuti editoriali non parte del calcolatore ---
+wordpress-child-theme/page-grimorio.php
+wordpress-child-theme/page-portale-completo.php
+wordpress-child-theme/page-homepage-personale.php
+wordpress-child-theme/index.php
+wordpress-child-theme/page.php
+wordpress-child-theme/single.php
+wordpress-child-theme/header.php
+wordpress-child-theme/footer.php
+wordpress-child-theme/front-page.php
+wordpress-child-theme/GUIDA-INSTALLAZIONE-WORDPRESS.md
+
+# --- Tema: fogli di stile e script del portale, non del calcolatore ---
+wordpress-child-theme/style.css
+wordpress-child-theme/css/style.css
+wordpress-child-theme/js/app.js
+wordpress-child-theme/js/data.js
+wordpress-child-theme/js/astrology-dict.json
+
+# --- Tema: immagini del portale (si conserva solo il sigillo usato dalla
+#     pagina del calcolatore come logo e anteprima social) ---
+wordpress-child-theme/Immagini/
+wordpress-child-theme/*.jpg
+wordpress-child-theme/screenshot.png
+wordpress-child-theme/hero-bg-figlie-di-lilith.png
+wordpress-child-theme/sigillo-lilith-cerchio-oro.png
+wordpress-child-theme/sigillo-lilith-oro-nero-trasparente.png
+wordpress-child-theme/sigillo-lilith-trasparente.png
