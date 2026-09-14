@@ -1773,6 +1773,46 @@ function renderLilithOperationalAnalysis(data) {
     container.innerHTML = html;
 }
 
+// Lettura a strati: segno, casa, dignità, moto. Ogni strato dice una cosa
+// che gli altri non dicono, con un testo proprio di quella combinazione.
+function renderLilithBodyLayers(layers) {
+    if (!layers) return '';
+    const order = [
+        ['sign', 'tag-strato-segno'],
+        ['house', 'tag-strato-casa'],
+        ['dignity', 'tag-strato-dignita'],
+        ['retrograde', 'tag-strato-moto']
+    ];
+    const paragraphs = txt => String(txt).split(/\n{2,}/).map(p => `<p>${escapeLilithHtml(p)}</p>`).join('');
+
+    const blocks = order
+        .filter(([k]) => layers[k] && layers[k].text)
+        .map(([k, cls]) => `
+            <div class="lilith-layer-block ${cls}">
+                <h6>${escapeLilithHtml(layers[k].title || '')}</h6>
+                ${paragraphs(layers[k].text)}
+            </div>`)
+        .join('');
+
+    // Terzo strato: la sintesi segno × casa, nei due registri.
+    const c = layers.combination;
+    const synthesis = (c && (c.canonico || c.lilithiano)) ? `
+        <div class="lilith-layer-block tag-strato-sintesi">
+            <h6>${escapeLilithHtml(c.title || 'Sintesi')}</h6>
+            ${c.canonico ? `<div class="lilith-registro lilith-registro-canonico">
+                <span class="lilith-registro-tag">Insegnamento canonico</span>
+                ${paragraphs(c.canonico)}
+            </div>` : ''}
+            ${c.lilithiano ? `<div class="lilith-registro lilith-registro-lilithiano">
+                <span class="lilith-registro-tag">Insegnamento lilithiano</span>
+                ${paragraphs(c.lilithiano)}
+            </div>` : ''}
+        </div>` : '';
+
+    if (!blocks && !synthesis) return '';
+    return `<div class="lilith-layers">${blocks}${synthesis}</div>`;
+}
+
 function render7PointLilithCard(key, a) {
     const glyph = LilithChartRenderer.planetSymbols[key] || '⚸';
     return `
@@ -1781,6 +1821,8 @@ function render7PointLilithCard(key, a) {
                 <span class="card-glyph">${glyph}</span>
                 <h5>${a.title || key}</h5>
             </div>
+
+            ${renderLilithBodyLayers(a.layers)}
 
             <div class="lilith-point-row">
                 <span class="lilith-pt-tag tag-funzione">1. Funzione</span>

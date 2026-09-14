@@ -39,6 +39,16 @@ if ( ! function_exists( 'figlie_di_lilith_enqueue_calculator_assets' ) ) {
             );
         }
 
+        if ( file_exists( get_stylesheet_directory() . '/js/calcolatore-corpi-dict.js' ) ) {
+            wp_enqueue_script(
+                'lilith-calcolatore-corpi-dict-js',
+                get_stylesheet_directory_uri() . '/js/calcolatore-corpi-dict.js',
+                array(),
+                '4.1.0',
+                true
+            );
+        }
+
         if ( file_exists( get_stylesheet_directory() . '/js/calcolatore-chart.js' ) ) {
             wp_enqueue_script(
                 'lilith-calcolatore-chart-js',
@@ -53,7 +63,7 @@ if ( ! function_exists( 'figlie_di_lilith_enqueue_calculator_assets' ) ) {
             wp_enqueue_script(
                 'lilith-calcolatore-engine-js',
                 get_stylesheet_directory_uri() . '/js/calcolatore-engine.js',
-                array( 'lilith-calcolatore-aspects-dict-js' ),
+                array( 'lilith-calcolatore-aspects-dict-js', 'lilith-calcolatore-corpi-dict-js' ),
                 '3.1.0',
                 true
             );

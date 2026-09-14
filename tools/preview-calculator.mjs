@@ -8,7 +8,7 @@ http.createServer(async(req,res)=>{
   if(url.pathname==='/'){
    const markup=(await readFile(path.join(root,'template-parts/calcolatore-markup.php'),'utf8')).replace(/<\?php[\s\S]*?\?>/g,'');
    res.setHeader('Content-Type','text/html; charset=utf-8');
-   res.end(`<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="/css/calcolatore-lilith.css"><body>${markup}${['aspects-dict','chart','engine','app'].map(n=>`<script src="/js/calcolatore-${n}.js"></script>`).join('')}<script type="module" src="/js/calcolatore-swiss.mjs"></script></body></html>`);return;
+   res.end(`<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="/css/calcolatore-lilith.css"><body>${markup}${['aspects-dict','corpi-dict','chart','engine','app'].map(n=>`<script src="/js/calcolatore-${n}.js"></script>`).join('')}<script type="module" src="/js/calcolatore-swiss.mjs"></script></body></html>`);return;
   }
   const file=path.resolve(root,'.'+decodeURIComponent(url.pathname));
   if(!file.startsWith(root+path.sep)) {res.writeHead(403);res.end();return;}

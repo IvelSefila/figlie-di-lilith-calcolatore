@@ -358,6 +358,14 @@
       const cleanMode = (sDef.mode || 'con intensità').trim();
       const darkEros = `${baseEros} Nel segno ${signArt}, questa forza opera ${cleanMode} e trova ${hDef.area} il suo campo d'azione e di conquista primario: cavalcare quest'ombra significa superare ogni pudore convenzionale e impugnare il proprio desiderio erotico come uno scettro di pura sovranità.`;
 
+      // Lettura a strati dal dizionario esegetico dei corpi
+      // (calcolatore-corpi-dict.js). Presente solo per i corpi già scritti;
+      // per gli altri restano i sette punti storici.
+      const layers = (typeof window !== 'undefined' && typeof window.getLilithBodyLayers === 'function')
+        ? window.getLilithBodyLayers(p)
+        : null;
+      const hasLayers = layers && (layers.sign || layers.house || layers.dignity || layers.retrograde);
+
       planetsInterp[p.name] = {
         title,
         function: func,
@@ -367,7 +375,8 @@
         context,
         errors,
         directive,
-        dark_eros: darkEros
+        dark_eros: darkEros,
+        layers: hasLayers ? layers : null
       };
     }
 
