@@ -36,15 +36,49 @@ Delle sintesi segno × casa ne esistono **43 su 2.880**.
 
 Per corpo, nell'ordine sotto; dentro ogni corpo, un lotto per segno — `Aries|1` … `Aries|12`, poi `Taurus|1` … e così via fino a `Pisces|12`. Dodici lotti chiudono un corpo.
 
-1. **Mars** — l'unico con la fase 1 chiusa da più tempo e il riferimento stilistico del progetto (ne manca 143)
-2. **Sun**, **Moon**
-3. **Venus**, **Mercury**, **Jupiter**, **Saturn**
-4. **Lilith**, **TrueLilith**
+**Mars è completo: 144 su 144.** È il riferimento di stile, struttura e lunghezza per tutti gli altri.
+
+Ordine deciso dal committente:
+
+1. **Lilith** (Luna Nera media) — il cuore del Canone, ciò che distingue questo calcolatore da ogni altro
+2. **TrueLilith** (osculatrice)
+3. **Sun**, **Moon**
+4. **Venus**, **Mercury**, **Jupiter**, **Saturn**
 5. **Uranus**, **Neptune**, **Pluto**
 6. **TrueNode**, **Chiron**
 7. **Ceres**, **Pallas**, **Juno**, **Vesta**, **ParsFortunae**, **Vertex**
 
-Le 43 sintesi esistenti non vanno riscritte: sono già conformi ai controlli. Completare le combinazioni mancanti attorno a esse.
+Le sintesi già esistenti non vanno riscritte: sono conformi ai controlli. Completare le combinazioni mancanti attorno a esse.
+
+### Il registro canonico per i punti moderni
+
+Marte ha due millenni di dottrina alle spalle, e il suo registro canonico poteva legittimamente richiamare la tradizione. **Lilith no.** La Luna Nera entra in astrologia nel Novecento: non esistono «autori antichi», «cronache medievali» o «maestri classici» che ne abbiano trattato.
+
+Attribuirle una tradizione inesistente è l'anti-pattern «astrologia inventata» del PRD principale, ed è particolarmente grave qui: il sorgente del calcolatore è pubblico e la pagina dichiara la precisione delle Swiss Ephemeris. Una falsa genealogia dottrinaria intaccherebbe la credibilità di tutto il resto.
+
+Per **Lilith, TrueLilith, Chiron, gli asteroidi, ParsFortunae e Vertex** il registro canonico deve quindi poggiare su ciò che esiste davvero:
+
+- la **definizione astronomica** del punto — per Lilith, l'apogeo dell'orbita lunare, il luogo in cui la Luna è più lontana dalla Terra;
+- la **logica simbolica** che ne discende, dichiarata come tale;
+- il **significato consolidato** della casa e del segno, che quelli sì hanno una tradizione;
+- la letteratura astrologica **moderna**, quando la si può nominare senza inventarla.
+
+Dove la tradizione tace, lo si dice: è più autorevole di una citazione falsa.
+
+### Le due Lune Nere vanno scritte in coppia
+
+`Lilith` (media) e `TrueLilith` (osculatrice) occupano lo stesso segno e la stessa casa a pochi gradi di distanza: sono la coppia che più rischia di diventare una la parafrasi dell'altra. Scriverne 144 e poi, mesi dopo, le altre 144 garantisce che la seconda ricalchi la prima.
+
+**Si lavora quindi alternando, segno per segno:** `Lilith/Aries|1..12`, poi `TrueLilith/Aries|1..12`, poi `Lilith/Taurus|1..12`, e così via. I lotti restano da dodici; ogni coppia viene scritta a poche ore di distanza, con il contrasto sotto gli occhi.
+
+La differenza da rendere non è lessicale ma sostanziale:
+
+| | |
+|---|---|
+| **Lilith media** | l'apogeo *calcolato*, che avanza con moto regolare: l'archetipo costante, la ferita strutturale, il fondo che non cambia |
+| **Lilith vera** | l'apogeo *osculatore*, quello reale, che oscilla attorno al medio, retrograda e accelera: l'irruzione nell'istante, il lampo, la reazione imprevedibile |
+
+Un controllo dedicato (`Luna Nera media e osculatrice non si parafrasano`) vieta fra i due corpi qualunque sequenza di **6 parole**, invece delle 8 previste fra corpi diversi.
 
 ---
 
@@ -85,7 +119,17 @@ Restano i sei del file `tests/corpi-dict.test.mjs`. Due note sul comportamento c
 
 **La soglia degli incipit ora ha un tetto assoluto.** Era «al massimo il 10% dei blocchi dello strato»; a 2.880 sintesi avrebbe permesso 288 aperture identiche. Ora è `min(10%, 8)`: **nessun trigramma iniziale può aprire più di otto blocchi**, qualunque sia la dimensione dello strato.
 
-Valgono immutate: nessuna sequenza di 6 parole ripetuta dentro lo stesso corpo; nessuna chiusa di 4 parole ripetuta nello strato; nessun ruolo marcato al maschile rivolto a chi legge; nessun participio concordato con la seconda persona, irregolari compresi (`ti sei mossa`, `sei costretta`, `sei attratto` sono tutti vietati); `canonico` e `lilithiano` almeno 80 parole ciascuno e mai l'uno parafrasi dell'altro.
+**Il genere cambia da un registro all'altro.** Il calcolatore chiede ora il sesso e per gli uomini non esegue il calcolo: il Canone maschile sarà un'opera distinta, con testi propri. Ma questo riguarda **soltanto il responso lilithiano**. Tre regole diverse, verificate da due controlli separati:
+
+| Registro | Regola |
+|---|---|
+| **`lilithiano`** | Si rivolge a **una lettrice**. Il femminile è corretto (*ti hanno convinta*, *sei cresciuta*, *da sola*), il neutro è ammesso e spesso più elegante (*ti è stato insegnato*), il **maschile è l'errore** (*sei attratto*, *restare solo*, *te stesso*). Qui «sorellanza», «ciascuna», «alleata» sono lessico legittimo del Canone. |
+| **Segni, case, dignità, retrogradi** | Restano **neutri**: sono la parte descrittiva del calcolatore e non presuppongono nulla. Qui sono errore *sia* il maschile *sia* il femminile rivolti a chi legge. |
+| **`canonico`** | Terza persona su «chi nasce con questa collocazione»: il maschile generico è la forma corretta della lingua. Escluso da entrambi i controlli. |
+
+La concordanza che cade su un sostantivo del testo non è mai un errore — *«la stabilità che da sola non possiede»* concorda con la Luna, *«l'avversario si è indebolito da solo»* con l'avversario. Se un controllo la segnala, si aggiunge alla lista di eccezioni **con il commento che indica il sostantivo**.
+
+Valgono immutate: nessuna sequenza di 6 parole ripetuta dentro lo stesso corpo; nessuna chiusa di 4 parole ripetuta nello strato; `canonico` e `lilithiano` almeno 80 parole ciascuno e mai l'uno parafrasi dell'altro.
 
 ---
 
@@ -95,7 +139,12 @@ Invariata e senza eccezioni: **se un testo non passa, si riscrive il testo.**
 
 Vietato alzare soglie, alzare il tetto degli incipit, permettere chiuse ripetute, aggiungere un ruolo umano a `THING_NOUNS`, ampliare `GENDER_ALLOWED` per una concordanza che riguarda chi legge, marcare un test `skip` o `todo`, cancellare un controllo.
 
-L'unica modifica ammessa resta aggiungere a `THING_NOUNS` un nome che **denota un oggetto e non una persona**, con un commento che lo giustifichi.
+Le uniche modifiche ammesse restano:
+
+- aggiungere a `THING_NOUNS` un nome che **denota un oggetto e non una persona**, con un commento che lo giustifichi;
+- aggiungere a `GENDER_ALLOWED` o `FEMININE_ALLOWED` una concordanza che cade su un sostantivo del testo, **con il commento che indica quale**.
+
+Se un controllo fallisce per una ragione che non è un difetto del testo — per esempio una sentinella che interroga una combinazione nel frattempo scritta — **non correggerlo da solo: segnalalo e fermati.** La sentinella sulla degradazione degli strati cerca ormai da sé una combinazione mancante e non va più aggiornata a mano.
 
 ---
 

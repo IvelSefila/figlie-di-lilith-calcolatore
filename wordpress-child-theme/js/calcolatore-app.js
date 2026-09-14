@@ -307,6 +307,7 @@ function initLilithFormEvents() {
 const FAMOUS_PRESETS = {
     einstein: {
         name: "Albert Einstein",
+        sex: "M",
         date: "1879-03-14",
         time: "11:30",
         location: "Ulm, Germania",
@@ -317,6 +318,7 @@ const FAMOUS_PRESETS = {
     },
     jung: {
         name: "Carl Gustav Jung",
+        sex: "M",
         date: "1875-07-26",
         time: "19:32",
         location: "Kesswil, Svizzera",
@@ -327,6 +329,7 @@ const FAMOUS_PRESETS = {
     },
     curie: {
         name: "Marie Curie",
+        sex: "F",
         date: "1867-11-07",
         time: "12:00",
         location: "Varsavia, Polonia",
@@ -337,6 +340,7 @@ const FAMOUS_PRESETS = {
     },
     bowie: {
         name: "David Bowie",
+        sex: "M",
         date: "1947-01-08",
         time: "09:00",
         location: "Brixton, Londra, UK",
@@ -347,6 +351,7 @@ const FAMOUS_PRESETS = {
     },
     jobs: {
         name: "Steve Jobs",
+        sex: "M",
         date: "1955-02-24",
         time: "19:15",
         location: "San Francisco, USA",
@@ -365,7 +370,16 @@ function loadLilithPreset(preset) {
     const lonInput = document.getElementById('lilith-longitude');
     const tzInput = document.getElementById('lilith-timezone');
     const hsInput = document.getElementById('lilith-house-system');
+    const sexInput = document.getElementById('lilith-sex');
     const geoBadge = document.getElementById('lilith-geo-badge');
+
+    if (sexInput && preset.sex) sexInput.value = preset.sex;
+    // I preset maschili restano nell'elenco come promessa del Canone futuro,
+    // ma non producono una lettura scritta per il femminile.
+    if (preset.sex && preset.sex !== 'F') {
+        openComingSoonModal('maschile');
+        return;
+    }
 
     if (dateInput) dateInput.value = preset.date;
     if (timeInput) timeInput.value = preset.time;
@@ -437,6 +451,15 @@ function checkLilithUrlHash() {
             if (hsIn && payload.house_system) hsIn.value = payload.house_system;
             const dstIn = document.getElementById('lilith-birth-dst');
             if (dstIn && payload.dst) dstIn.value = payload.dst;
+            const sexIn = document.getElementById('lilith-sex');
+            if (sexIn && payload.sex) sexIn.value = payload.sex;
+
+            // I link condivisi prima dell'introduzione del campo non lo
+            // contengono: si assume il femminile, l'unico oggi disponibile.
+            if (payload.sex && payload.sex !== 'F') {
+                openComingSoonModal('maschile');
+                return;
+            }
 
             if (latIn && lonIn && latIn.value && lonIn.value) {
                 const geoBadge = document.getElementById('lilith-geo-badge');
@@ -939,6 +962,20 @@ async function handleLilithFormSubmit(e) {
     const form = document.getElementById('lilith-chart-form');
     const formData = new FormData(form);
 
+    // La Lettura Lilithiana è oggi redatta per il femminile. Il Canone
+    // maschile sarà un'opera distinta: fino ad allora il calcolo per gli
+    // uomini non viene eseguito, invece di consegnare un testo che non li
+    // riguarda.
+    const sex = formData.get('sex');
+    if (!sex) {
+        showLilithToast('Indica il sesso: la lettura è redatta in forma diversa e non può essere generica.');
+        return;
+    }
+    if (sex !== 'F') {
+        openComingSoonModal('maschile');
+        return;
+    }
+
     const dstSelect = document.getElementById('lilith-birth-dst');
     const requestData = {
         date: formData.get('date'),
@@ -948,7 +985,8 @@ async function handleLilithFormSubmit(e) {
         longitude: parseFloat(lonInput.value),
         timezone: document.getElementById('lilith-timezone').value || null,
         house_system: formData.get('house_system') || 'P',
-        dst: dstSelect ? dstSelect.value : 'auto'
+        dst: dstSelect ? dstSelect.value : 'auto',
+        sex: sex
     };
 
     executeLilithCalculation(requestData);
@@ -2166,9 +2204,31 @@ window.renderLilithKarmaDestiny = renderLilithKarmaDestiny;
 
 // ============== MODALE COMING SOON ==============
 
-function openComingSoonModal() {
+function openComingSoonModal(motivo) {
     const modal = document.getElementById('lilith-coming-soon-modal');
     if (!modal) return;
+
+    // Quando la modale si apre perché il tema è maschile, va detto perché:
+    // altrimenti sembra un guasto invece di una scelta editoriale.
+    const intro = modal.querySelector('.lilith-coming-soon-intro');
+    if (intro) {
+        let nota = intro.querySelector('.lilith-coming-soon-nota');
+        if (motivo === 'maschile') {
+            if (!nota) {
+                nota = document.createElement('p');
+                nota.className = 'lilith-coming-soon-nota';
+                intro.insertBefore(nota, intro.firstChild);
+            }
+            nota.innerHTML = '<strong>Il Canone maschile non è ancora scritto.</strong> '
+                + 'La Lettura Lilithiana nasce dal femminile e ne parla la lingua: consegnarla a un uomo '
+                + 'con i generi rovesciati sarebbe una contraffazione, non una cortesia. L’opera per il maschile '
+                + 'è un lavoro distinto, già in cantiere.';
+            nota.style.display = 'block';
+        } else if (nota) {
+            nota.style.display = 'none';
+        }
+    }
+
     modal.classList.add('is-active');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';

@@ -3742,3 +3742,18 @@
 }
 
 .lilith-registro p + p { margin-top: 0.85rem; }
+
+/* Nota della modale quando il tema è maschile */
+.lilith-coming-soon-nota {
+  display: none;
+  margin: 0 0 1.1rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 90, 31, 0.5);
+  border-left: 3px solid #ff5a1f;
+  background: rgba(139, 0, 0, 0.18);
+  color: #f7e3d6;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.lilith-coming-soon-nota strong { color: #ffb08a; }

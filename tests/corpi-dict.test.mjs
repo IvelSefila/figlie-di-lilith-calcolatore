@@ -104,39 +104,114 @@ for (const [name, body] of bodies) {
     assert.deepEqual(collisions, [], 'sequenze identiche riusate fra blocchi');
   });
 
-  // Il calcolatore si rivolge a chi legge senza presumerne il genere: in
-  // italiano il punto debole sono i participi e gli aggettivi che concordano
-  // con il soggetto della seconda persona. Le eccezioni ammesse sono quelle
-  // in cui la concordanza riguarda un sostantivo del testo, non chi legge.
-  const GENDER_PATTERNS = [
-    /\bt[eu]\s+stess[oa]\b/gi,
-    // Participi regolari e irregolari: «ti sei mossa», «sei costretta»,
-    // «sei protetto» concordano tutti con chi legge.
-    /\b(?:ti\s+)?(?:sei|eri|sarai|saresti|fossi)\s+(?:mai\s+|già\s+|sempre\s+|poi\s+)?[a-zà-ùA-ZÀ-Ù]+(?:at[oa]|ut[oa]|is[oa]|ss[oa]|st[oa]|nt[oa]|lt[oa]|tt[oa])\b/gi,
-    /\bti\s+(?:hanno|ha|avevano|aveva|avranno|avrà)\s+(?:mai\s+|già\s+)?[a-zà-ùA-ZÀ-Ù]+(?:ata|ate|ati)\b/gi,
-    /\b(?:ancora|già|sempre)\s+(?:viv[oa]|sol[oa]|stanc[oa]|pront[oa]|liber[oa]|sicur[oa])\b/gi,
-    /\bdiventare\s+[a-zà-ù]+(?:iva|ivo|osa|oso)\b/gi
+  // Due regole diverse, perché i registri si rivolgono a persone diverse.
+  //
+  //   · registro LILITHIANO — è il responso, e nasce dal femminile: il
+  //     calcolatore chiede il sesso e oggi calcola solo per le donne, quindi
+  //     il femminile è corretto, il neutro è ammesso, il maschile è l'errore.
+  //   · segni, case, dignità, retrogradi — sono la parte descrittiva del
+  //     calcolatore e restano NEUTRI: qui sono errore sia il maschile sia il
+  //     femminile rivolti a chi legge.
+  //   · registro CANONICO — terza persona su «chi nasce con questa
+  //     collocazione»: il maschile generico è la forma corretta della lingua
+  //     e non presuppone nulla. Escluso da entrambe le regole.
+  const MASCULINE_PATTERNS = [
+    /\bt[eu]\s+stesso\b/gi,
+    // Participio maschile concordato con la seconda persona:
+    // «sei attratto», «sei protetto», «ti sei mosso».
+    /\b(?:ti\s+)?(?:sei|eri|sarai|saresti|fossi)\s+(?:mai\s+|già\s+|sempre\s+|poi\s+)?[a-zà-ùA-ZÀ-Ù]{3,}(?:ato|uto|iso|sso|sto|nto|lto|tto)\b/gi,
+    // Con «ti» oggetto diretto: «ti hanno lasciato», «ti tenevano legato».
+    // Con i verbi che reggono il dativo — insegnare, ripetere, imporre… — il
+    // «ti» è indiretto e il participio non concorda: quelli non si toccano.
+    /\bti\s+[a-zà-ùA-ZÀ-Ù]+(?:ano|eva|evano|ebbe|ebbero|anno|ava|avano)\s+(?:mai\s+|già\s+|sempre\s+)?(?!(?:insegnato|inculcato|ripetuto|caricato|indotto|imposto|chiesto|ordinato|intimato|vietato|concesso|promesso|negato|detto|spiegato|tolto|dato|offerto|mostrato|trasmesso|lasciato\s+credere)\b)[a-zà-ùA-ZÀ-Ù]{3,}(?:ato|uto|tto|sto|sso)\b/gi,
+    // Infinito passivo al maschile riferito a chi legge.
+    /\b(?:essere|sentirti|restare|rimanere|farti|considerarti|ritrovarti|diventare)\s+(?!\w*mente\b)[a-zà-ùA-ZÀ-Ù]{3,}(?:ato|uto|tto|sso)\b/gi,
+    /\bchi\s+viene\s+(?!\w*mente\b)[a-zà-ùA-ZÀ-Ù]{3,}(?:ato|uto|tto)\b/gi,
+    // «da solo» va colpito quando riguarda chi legge, non quando descrive un
+    // avversario che si indebolisce da solo o Marte che da solo non basta.
+    /\b(?:stare|restare|rimanere|camminare|reggere|farcela|cavartela|riuscire|vivere|decidere|agire)\s+(?:\w+\s+){0,3}da\s+solo\b/gi,
+    // Aggettivi di stato al maschile: «restare solo», «ancora vivo».
+    /\b(?:rimanere|restare|sentirti|ritrovarti|trovarti|essere|diventare)\s+(?:sempre\s+|ancora\s+)?(?:vivo|solo|stanco|pronto|libero|sicuro|perduto|smarrito|escluso|isolato)\b/gi,
+    /\b(?:ancora|già|sempre)\s+(?:vivo|solo|stanco|pronto|libero|sicuro)\b/gi
   ];
   const GENDER_ALLOWED = [
     // La concordanza cade su un sostantivo del testo, non su chi legge.
-    'essere minacciato',   // → qualcuno
-    'essere sbagliata',    // → una direzione
-    'essere esercitata',   // → la forza
-    'essere usata'         // → la forza
+    'essere minacciato',      // → qualcuno
+    'essere sbagliato',       // → un presupposto
+    'essere usato',           // → lo strumento
+    'essere onorato',         // → il patto
+    'essere misurato',        // → il valore
+    'essere soppesato',       // → ogni gesto
+    'essere messo',           // → il comando
+    'essere stato',           // → un fatto passato
+    'essere varcato',         // → il limite
+    'essere vissuto',         // → un atto solenne
+    'essere collaudato',      // → ciò che non si può verificare
+    'essere cancellato',      // → l'attrito
+    'essere aiutato',         // → chi si trova in difficoltà
+    'essere corrotto',        // → il patto
+    'essere invitato'         // → l'ospite
   ];
 
-  test(`${name}: il testo non presume il genere di chi legge`, () => {
-    const found = [];
-    for (const [label, text] of blocksOf(body)) {
-      for (const pattern of GENDER_PATTERNS) {
-        for (const match of text.match(pattern) || []) {
-          if (!GENDER_ALLOWED.some(ok => match.toLowerCase().includes(ok))) {
-            found.push(`${label}: «${match.trim()}»`);
-          }
-        }
+  // Le stesse costruzioni, al femminile: vietate fuori dal registro lilithiano.
+  const FEMININE_PATTERNS = [
+    /\bt[eu]\s+stessa\b/gi,
+    /\b(?:ti\s+)?(?:sei|eri|sarai|saresti|fossi)\s+(?:mai\s+|già\s+|sempre\s+|poi\s+)?[a-zà-ùA-ZÀ-Ù]{3,}(?:ata|uta|isa|ssa|sta|nta|lta|tta)\b/gi,
+    /\bti\s+[a-zà-ùA-ZÀ-Ù]+(?:ano|eva|evano|ebbe|ebbero|anno|ava|avano)\s+(?:mai\s+|già\s+|sempre\s+)?[a-zà-ùA-ZÀ-Ù]{3,}(?:ata|uta|tta|sta|ssa)\b/gi,
+    /\b(?:essere|sentirti|restare|rimanere|farti|considerarti|ritrovarti|diventare)\s+(?!\w*mente\b)[a-zà-ùA-ZÀ-Ù]{3,}(?:ata|uta|tta|ssa)\b/gi,
+    /\bchi\s+viene\s+(?!\w*mente\b)[a-zà-ùA-ZÀ-Ù]{3,}(?:ata|uta|tta)\b/gi,
+    /\b(?:stare|restare|rimanere|camminare|reggere|farcela|cavartela|riuscire|vivere|decidere|agire)\s+(?:\w+\s+){0,3}da\s+sola\b/gi,
+    /\b(?:rimanere|restare|sentirti|ritrovarti|trovarti|essere|diventare)\s+(?:sempre\s+|ancora\s+)?(?:viva|sola|stanca|pronta|libera|sicura|perduta|smarrita|esclusa|isolata)\b/gi,
+    /\b(?:ciascuna|un['’]esule|ogni\s+alleata)\b/gi
+  ];
+  const FEMININE_ALLOWED = [
+    // La concordanza cade su un sostantivo del testo, non su chi legge.
+    'essere sbagliata',       // → una direzione
+    'essere esercitata',      // → la forza
+    'essere usata',           // → la forza
+    'essere onorata',         // → una connessione col lignaggio
+    'essere addomesticate',   // → la tua arte, la tua passione
+    'essere misurata',        // → la dignità umana
+    'essere profanata',       // → la tua sostanza vitale
+    'essere soppesata',       // → ogni mossa
+    'essere messa',           // → la vocazione al comando
+    'essere stata',           // → la tua espressività
+    'essere varcate',         // → certe soglie
+    'essere spostata',        // → la mole di terra battuta
+    'essere distrutta',       // → la dignità
+    'essere detronizzata',    // → l'autorità
+    'essere rispettata',      // → la soglia
+    'essere sanzionata',      // → la protesta
+    'essere soffocata'        // → la fiamma
+  ];
+
+  const violazioni = (text, patterns, allowed) => {
+    const out = [];
+    for (const pattern of patterns) {
+      for (const match of text.match(pattern) || []) {
+        if (!allowed.some(ok => match.toLowerCase().includes(ok))) out.push(match.trim());
       }
     }
-    assert.deepEqual(found, [], 'forme marcate al maschile o al femminile rivolte a chi legge');
+    return out;
+  };
+
+  test(`${name}: il responso lilithiano parla a una lettrice`, () => {
+    const found = [];
+    for (const [label, text] of blocksOf(body)) {
+      if (!label.includes('lilithiano')) continue;
+      for (const m of violazioni(text, MASCULINE_PATTERNS, GENDER_ALLOWED)) found.push(`${label}: «${m}»`);
+    }
+    assert.deepEqual(found, [], 'forme maschili nel responso lilithiano');
+  });
+
+  test(`${name}: segni, case, dignità e retrogradi restano neutri`, () => {
+    const found = [];
+    for (const [label, text] of blocksOf(body)) {
+      if (label.includes('lilithiano') || label.includes('canonico')) continue;
+      for (const m of violazioni(text, MASCULINE_PATTERNS, GENDER_ALLOWED)) found.push(`${label}: «${m}» (maschile)`);
+      for (const m of violazioni(text, FEMININE_PATTERNS, FEMININE_ALLOWED)) found.push(`${label}: «${m}» (femminile)`);
+    }
+    assert.deepEqual(found, [], 'genere presunto fuori dal responso lilithiano');
   });
 
   test(`${name}: i titoli sono tutti distinti`, () => {
@@ -184,6 +259,44 @@ test('nessuna formula riciclata fra corpi diversi', () => {
     }
   }
   assert.deepEqual(collisions.slice(0, 20), [], `${collisions.length} sequenze di 8 parole riusate fra corpi diversi`);
+});
+
+// Luna Nera media e osculatrice occupano lo stesso segno e la stessa casa a
+// pochi gradi di distanza: sono la coppia che più rischia di diventare una la
+// parafrasi dell'altra, e la regola generale fra corpi diversi (8 parole) è
+// troppo larga per accorgersene. Fra loro la soglia scende a 6.
+//
+// La differenza da scrivere non è lessicale ma sostanziale: la media è
+// l'apogeo calcolato, l'archetipo costante; la vera è l'apogeo osculatore
+// reale, che oscilla, retrograda e colpisce nell'istante.
+test('Luna Nera media e osculatrice non si parafrasano', () => {
+  const testi = nome => {
+    const body = dict[nome];
+    if (!body) return [];
+    return [
+      ...Object.entries(body.signs || {}).map(([k, v]) => [`segno ${k}`, v.text]),
+      ...Object.entries(body.houses || {}).map(([k, v]) => [`casa ${k}`, v.text]),
+      ...(body.retrograde ? [['retrogrado', body.retrograde.text]] : []),
+      ...Object.entries(body.combinations || {}).flatMap(([k, v]) => [[`${k} canonico`, v.canonico], [`${k} lilithiano`, v.lilithiano]])
+    ];
+  };
+  const media = testi('Lilith'), vera = testi('TrueLilith');
+  if (!media.length || !vera.length) return;
+
+  const seen = new Map();
+  for (const [label, text] of media) {
+    const ws = words(text);
+    for (let i = 0; i + 6 <= ws.length; i++) seen.set(ws.slice(i, i + 6).join(' '), label);
+  }
+  const collisions = [];
+  for (const [label, text] of vera) {
+    const ws = words(text);
+    for (let i = 0; i + 6 <= ws.length; i++) {
+      const gram = ws.slice(i, i + 6).join(' ');
+      if (seen.has(gram)) collisions.push(`«${gram}» in Lilith/${seen.get(gram)} e TrueLilith/${label}`);
+    }
+  }
+  assert.deepEqual(collisions.slice(0, 15), [], `${collisions.length} sequenze condivise fra le due Lune Nere`);
 });
 
 // Un incipit che si ripete è uno stampo. La soglia scala con la dimensione
@@ -275,6 +388,23 @@ test('la formula prescrittiva non è la chiusura obbligata del canonico', () => 
   assert.deepEqual(offenders, [], 'formula prescrittiva usata come stampo');
 });
 
+// L'aneddoto storico-documentario («nelle cronache medievali…», «i registri
+// notarili testimoniano…») appartiene al registro canonico ed è un bel modo
+// di chiudere. Quando però diventa la chiusura di quasi metà dei blocchi ha
+// preso il posto della formula prescrittiva senza cambiare natura: è di
+// nuovo una chiusura di default. Tetto: un blocco su quattro.
+const CHIUSA_STORICA = /\b(?:le |nelle |nei |negli |i |gli )?(?:cronache|registri|archivi|memorie|trattati|biografie|diari|annali|bestiari|pamphlet|saghe|sentenze|resoconti|carteggi|documenti|manuali|codici)\b|\bla storia (?:imperiale|militare|civile|antica|moderna|delle|dei|di)\b/i;
+test('l’aneddoto storico non è la chiusura di default del canonico', () => {
+  const offenders = [];
+  for (const [layer, blocks] of Object.entries(LAYERS)) {
+    if (!layer.includes('canonico') || blocks.length < 8) continue;
+    const used = blocks.filter(([, text]) => CHIUSA_STORICA.test(frasi(text).at(-1) || '')).length;
+    const limit = Math.ceil(blocks.length * 0.25);
+    if (used > limit) offenders.push(`${layer}: chiusura con aneddoto storico in ${used} blocchi su ${blocks.length} (massimo ${limit})`);
+  }
+  assert.deepEqual(offenders, [], 'aneddoto storico usato come chiusura di default');
+});
+
 test('le chiuse non si ripetono', () => {
   const offenders = [];
   for (const [layer, blocks] of Object.entries(LAYERS)) {
@@ -319,12 +449,27 @@ test('getLilithBodyLayers restituisce gli strati giusti e degrada senza errori',
   assert.equal(retro.dignity, null, 'i Gemelli non sono una dignità di Marte');
   assert.ok(retro.retrograde.text);
 
-  // Terzo strato: presente solo per la coppia segno × casa effettivamente scritta.
+  // Terzo strato: presente solo per la coppia segno × casa effettivamente
+  // scritta. La sentinella cerca da sola una combinazione ancora mancante,
+  // così non va riscritta ogni volta che un lotto ne completa un'altra; se un
+  // corpo è completo su tutte e 144 non c'è nulla da verificare.
   const synth = window.getLilithBodyLayers({ name: 'Mars', sign: 'Libra', house: 12, is_retrograde: false });
   assert.equal(synth.dignity.kind, 'Esilio');
   assert.match(synth.combination.title, /Bilancia.*Dodicesima/);
   assert.ok(synth.combination.canonico && synth.combination.lilithiano);
-  assert.equal(window.getLilithBodyLayers({ name: 'Mars', sign: 'Libra', house: 11, is_retrograde: false }).combination, null);
+
+  for (const [name, body] of bodies) {
+    const mancante = SIGNS.flatMap(sign => HOUSES.map(house => [sign, house]))
+      .find(([sign, house]) => !(body.combinations || {})[`${sign}|${house}`]);
+    if (!mancante) continue;
+    const [sign, house] = mancante;
+    assert.equal(
+      window.getLilithBodyLayers({ name, sign, house, is_retrograde: false }).combination,
+      null,
+      `${name}: ${sign}|${house} non è scritta, la sintesi deve restare null`
+    );
+    break;
+  }
 
   // L'oggetto arriva da un altro realm: si confrontano i valori, non il prototipo.
   const unknown = window.getLilithBodyLayers({ name: 'UnknownBody', sign: 'Leo', house: 2, is_retrograde: false });

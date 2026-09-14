@@ -77,6 +77,17 @@ if ( function_exists( 'figlie_di_lilith_enqueue_calculator_assets' ) ) {
           <small>Formato 24h dall'estratto di nascita</small>
         </div>
 
+        <!-- Sesso: la lettura lilithiana è oggi scritta per il femminile -->
+        <div class="lilith-form-group">
+          <label for="lilith-sex">Sesso *</label>
+          <select id="lilith-sex" name="sex" required>
+            <option value="" selected disabled>Scegli…</option>
+            <option value="F">Donna</option>
+            <option value="M">Uomo</option>
+          </select>
+          <small>La Lettura Lilithiana è oggi redatta per il femminile. Il Canone maschile è un'opera distinta, in preparazione.</small>
+        </div>
+
         <!-- Ora ripetuta al ritorno dell'ora solare -->
         <div class="lilith-form-group">
           <label for="lilith-birth-dst">Ora Ripetuta (Cambio Ora)</label>
